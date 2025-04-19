@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -12,7 +13,7 @@ app.use(express.json());
 const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
 const VERSION_ID = '55a41a6a19205f74a3ee0ec4186972fefe4039c8598c701a7a24afd45bcb127b';
 
-const generatedToday = {}; // uid별 기록 저장
+const generatedToday = {};
 
 const getKoreanDateString = () => {
   const now = new Date();
@@ -27,8 +28,8 @@ app.post('/generate', async (req, res) => {
   }
 
   if (!REPLICATE_API_TOKEN) {
-    console.error('❌ Replicate API 토큰이 없습니다.');
-    return res.status(500).json({ error: '서버 설정 오류: API 토큰 누락' });
+    console.error('❌ REPLICATE_API_TOKEN이 정의되지 않음');
+    return res.status(500).json({ error: '서버 설정 오류: 토큰 없음' });
   }
 
   const today = getKoreanDateString();
@@ -40,9 +41,7 @@ app.post('/generate', async (req, res) => {
   }
 
   if (record.count >= 5) {
-    return res.status(403).json({
-      error: '이미지를 더 생성하려면 플랜을 업그레이드 하거나 12시 이후에 다시 시도해주세요.',
-    });
+    return res.status(403).json({ error: '이미지 생성 제한을 초과했습니다.' });
   }
 
   try {
@@ -88,7 +87,6 @@ app.post('/generate', async (req, res) => {
       return res.status(500).json({ error: '이미지 응답 없음' });
     }
 
-    // 이미지 생성 성공 -> 카운트 저장
     record.count += 1;
     generatedToday[uid] = record;
 
