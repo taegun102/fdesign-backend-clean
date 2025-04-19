@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const fetch = require('node-fetch');
-const { format } = require('date-fns-tz');
+const { formatInTimeZone } = require('date-fns-tz');
 
 dotenv.config();
 const app = express();
@@ -18,7 +18,7 @@ const generatedToday = {}; // uid별 기록 저장
 
 const getKoreanDateString = () => {
   const now = new Date();
-  return format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Seoul' });
+  return formatInTimeZone(now, 'Asia/Seoul', 'yyyy-MM-dd');
 };
 
 app.post('/generate', async (req, res) => {
