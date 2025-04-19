@@ -1,12 +1,13 @@
-// server.js
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import fetch from 'node-fetch';
-import { format } from 'date-fns-tz';
+// CommonJS 방식으로 바꾸기
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const fetch = require('node-fetch');
+const { format } = require('date-fns-tz');
 
 dotenv.config();
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -20,7 +21,7 @@ const getKoreanDateString = () => {
   return format(now, 'yyyy-MM-dd', { timeZone: 'Asia/Seoul' });
 };
 
-app.post('/generate', (req, res) => {
+app.post('/generate', async (req, res) => {
   const { prompt, uid } = req.body;
 
   if (!uid || !prompt) {
