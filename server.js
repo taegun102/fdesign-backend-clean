@@ -1,4 +1,3 @@
-// CommonJS 방식으로 바꾸기
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -7,7 +6,6 @@ const { formatInTimeZone } = require('date-fns-tz');
 
 dotenv.config();
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -26,6 +24,11 @@ app.post('/generate', async (req, res) => {
 
   if (!uid || !prompt) {
     return res.status(400).json({ error: 'uid 또는 prompt 누락됨' });
+  }
+
+  if (!REPLICATE_API_TOKEN) {
+    console.error('❌ Replicate API 토큰이 없습니다.');
+    return res.status(500).json({ error: '서버 설정 오류: API 토큰 누락' });
   }
 
   const today = getKoreanDateString();
